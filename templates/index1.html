@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Investment Manager</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="padding-left: 20px;">Your Investment Manager</a>
+            <!-- Button with ml-auto to push it to the right -->
+            <button class="btn btn-light ml-auto" type="button">Add</button>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Asset Type/Name</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Amount Invested</th>
+                    <th scope="col">Current Price</th>
+                    <th scope="col">Return</th>
+                    <th scope="col">Current Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for investment in response.transactions %}
+                    <tr class="clickable-row table-primary" data-toggle="collapse" data-target=".row{{ loop.index }}">
+                        <td>&#128176; {{ investment.type }}</td>
+                        <td></td>
+                        <td>{{ investment.invested }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% set outer_loop_index = loop.index %}
+                    {% for item in investment.investments %}
+                        <tr class="collapse row{{ outer_loop_index }}">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.qty }}</td>
+                                <td>{{ item.invested }}</td>
+                                <td>{{ item.currentPrice }}</td>
+                                <td>{{ item.unrealisedGain }}</td>
+                                <td>{{ item.currentAmount }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+<!--                <tr class="clickable-row" data-toggle="collapse" data-target=".row1">-->
+<!--                    <th scope="row">1</th>-->
+<!--                    <td>John Doe</td>-->
+<!--                    <td>25</td>-->
+<!--                </tr>-->
+<!--                <tr class="collapse row1">-->
+<!--                    <td colspan="3">Details for John Doe</td>-->
+<!--                </tr>-->
+<!--                <tr class="clickable-row" data-toggle="collapse" data-target=".row2">-->
+<!--                    <th scope="row">2</th>-->
+<!--                    <td>Jane Smith</td>-->
+<!--                    <td>30</td>-->
+<!--                </tr>-->
+<!--                <tr class="collapse row2">-->
+<!--                    <td colspan="3">Details for Jane Smith</td>-->
+<!--                </tr>-->
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        // Add a click event listener to the rows with the 'clickable-row' class
+        document.querySelectorAll('.clickable-row').forEach(function(row) {
+            row.addEventListener('click', function() {
+                // Toggle the 'show' class on the target rows
+                var targetRows = document.querySelectorAll(this.getAttribute('data-target'));
+                targetRows.forEach(function(targetRow) {
+                    targetRow.classList.toggle('show');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
