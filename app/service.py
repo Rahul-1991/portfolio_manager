@@ -1,6 +1,6 @@
 import requests
 import yfinance as yf
-from config import Config
+from .config import Config
 from datetime import datetime
 from app.common_utils import get_months_count, get_current_datetime_object
 
@@ -43,7 +43,7 @@ class PortfolioService:
         return p_amount
 
     def get_recurring_deposit_details(self):
-        rd_details = {'type': 'Recurring Deposit', 'investments': []}
+        rd_details = {'type': 'recurringdeposit', 'investments': []}
         total_invested = 0
         for data in Config.RD_DETAIL:
             month_count = get_months_count(datetime.strptime(data.get('startDate'), '%Y-%m-%d'), get_current_datetime_object())
@@ -58,7 +58,7 @@ class PortfolioService:
         return rd_details
 
     def get_mutual_funds_details(self):
-        mf_details = {'type': 'Mutual Funds', 'investments': []}
+        mf_details = {'type': 'mutualfunds', 'investments': []}
         total_invested = 0
         for portfolio_data in Config.MF_DETAILS:
             mf_current_nav = self.get_latest_nav(portfolio_data.get('api'))
