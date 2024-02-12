@@ -24,6 +24,7 @@ class HomepageTemp(MethodView):
     def get(self):
         return render_template('index2.html')
 
+
 class PortfolioData(MethodView):
 
     def get(self):
