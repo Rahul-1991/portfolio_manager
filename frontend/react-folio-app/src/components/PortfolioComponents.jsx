@@ -10,6 +10,8 @@ import StockSchemes from './assets/StockSchemes'
 import RDSchemes from './assets/RDSchemes'
 import NSCSchemes from './assets/NSCSchemes'
 import CryptoScheme from './assets/CryptoScheme'
+import { RiMoneyDollarBoxFill } from "react-icons/ri";
+import ExternalAppScheme from './assets/ExternalAppScheme'
 
 
 function PortfolioComponents(props) {
@@ -36,6 +38,11 @@ function PortfolioComponents(props) {
     const [isCryptoVisible, setIsCryptoVisible] = useState(false);
     const toggleCryptoVisibility = () => {
       setIsCryptoVisible(!isCryptoVisible);
+    };
+
+    const [isExtAppVisible, setIsExtAppVisible] = useState(false);
+    const toggleExtAppVisibility = () => {
+        setIsExtAppVisible(!isExtAppVisible);
     };
   
     function getComponentData(component) {
@@ -75,6 +82,13 @@ function PortfolioComponents(props) {
             logo: MdAttachMoney,
             schemeComponent: <CryptoScheme isVisible={isCryptoVisible} component={component} />
           };
+        case "External App":
+            return {
+                toggleVisibility: toggleExtAppVisibility,
+                returnValue: component.current,
+                logo: RiMoneyDollarBoxFill,
+                schemeComponent: <ExternalAppScheme isVisible={isExtAppVisible} component={component} />
+            }
         default:
           return null;
       }
