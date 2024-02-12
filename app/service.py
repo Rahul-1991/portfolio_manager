@@ -1,6 +1,6 @@
 import requests
 import yfinance as yf
-from .config import Config
+from config import Config
 from datetime import datetime
 from app.common_utils import get_months_count, get_current_datetime_object
 
