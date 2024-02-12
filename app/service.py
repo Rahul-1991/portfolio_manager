@@ -123,13 +123,34 @@ class PortfolioService:
         crypto_details.update({'invested': total_invested, 'current': total_current_amount, 'gain': total_current_amount - total_invested})
         return crypto_details
 
+    def get_external_app_details(self):
+        cred_details = {'type': 'External App', 'investments': []}
+        total_invested, total_current_amount = 0, 0
+        for data in Config.EXT_APP_DETAILS:
+            invested_date = datetime.strptime(data.get('invested_at'), "%Y-%m-%d")
+            current_date = datetime.now()
+            num_days = (current_date - invested_date).days
+            interest = (data.get('invested') * data.get('roi') * num_days) / (100 * 365)
+            current_amount = data.get('invested') + interest
+            return_percent = ((current_amount - data.get('invested')) / data.get('invested')) * 100
+            cred_details.get('investments').append({
+                'name': data.get('name'), 'invested': data.get('invested'), 'roi': data.get('roi'), 'currentAmount': current_amount,
+                'unrealisedGain': current_amount - data.get('invested'), 'returnPercent': return_percent
+            })
+            total_invested += data.get('invested')
+            total_current_amount += current_amount
+        cred_details.update({'invested': total_invested, 'current': total_current_amount, 'gain': total_current_amount - total_invested})
+        return cred_details
+
     def get_portfolio_details(self):
         rd_data = self.get_recurring_deposit_details()
         mf_data = self.get_mutual_funds_details()
         stock_data = self.get_stock_price_details()
         nsc_data = self.get_nsc_details()
         crypto_data = self.get_crypto_details()
-        total_investment = rd_data.get('invested') + mf_data.get('invested') + stock_data.get('invested') + nsc_data.get('invested') + crypto_data.get('invested')
+        cred_data = self.get_external_app_details()
+        total_investment = rd_data.get('invested') + mf_data.get('invested') + stock_data.get('invested') \
+            + nsc_data.get('invested') + crypto_data.get('invested') + cred_data.get('invested')
         return {
             'totalInvestment': total_investment,
             'transactions': [
@@ -137,6 +158,7 @@ class PortfolioService:
                 mf_data,
                 stock_data,
                 nsc_data,
-                crypto_data
+                crypto_data,
+                cred_data
             ]
         }
