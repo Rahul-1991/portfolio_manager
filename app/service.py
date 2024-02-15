@@ -1,4 +1,5 @@
 import requests
+import math
 import yfinance as yf
 from config import Config
 from datetime import datetime
@@ -48,12 +49,13 @@ class PortfolioService:
         rd_details = {'type': 'Recurring Deposit', 'investments': []}
         total_invested, total_maturity_amount = 0, 0
         for data in Config.RD_DETAIL:
-            month_count = get_months_count(datetime.strptime(data.get('startDate'), '%Y-%m-%d'), get_current_datetime_object())
-            amount_invested = month_count * data.get('installment')
-            maturity_amount = self.get_rd_maturity_amount(data.get('installment'), data.get('roi'), month_count)
+            # month_count = get_months_count(datetime.strptime(data.get('startDate'), '%Y-%m-%d'), get_current_datetime_object())
+            amount_invested = data.get('durationInMonths') * data.get('installment')
+            maturity_amount = self.get_rd_maturity_amount(data.get('installment'), data.get('roi'), data.get('durationInMonths'))
             rd_details.get('investments').append({
                 'installment': data.get('installment'), 'rate': data.get('roi'), 'startDate': data.get('startDate'),
-                'invested': amount_invested, 'maturityAmount': maturity_amount, 'name': data.get('name'),
+                'invested': amount_invested, 'maturityAmount': maturity_amount, 'name': data.get('name'), 
+                'maturityDate': datetime.strptime(data.get('maturityDate'), "%Y-%m-%d").strftime("%d %B %Y").replace(" 0", " ")
             })
             total_invested += amount_invested
             total_maturity_amount += maturity_amount
@@ -112,6 +114,8 @@ class PortfolioService:
         total_invested, total_current_amount = 0, 0
         for data in Config.CRYPTO_DETAILS:
             current_price = self.get_crypto_price(data.get('symbol'))
+            if current_price == 'NA':
+                return crypto_details
             current_amount = current_price * data.get('qty')
             return_percent = ((current_amount - data.get('invested')) / data.get('invested')) * 100
             crypto_details.get('investments').append({
@@ -149,8 +153,8 @@ class PortfolioService:
         nsc_data = self.get_nsc_details()
         crypto_data = self.get_crypto_details()
         cred_data = self.get_external_app_details()
-        total_investment = rd_data.get('invested') + mf_data.get('invested') + stock_data.get('invested') \
-            + nsc_data.get('invested') + crypto_data.get('invested') + cred_data.get('invested')
+        total_investment = rd_data.get('maturity') + mf_data.get('current') + stock_data.get('current') \
+            + nsc_data.get('maturity') + crypto_data.get('current') + cred_data.get('current')
         return {
             'totalInvestment': total_investment,
             'transactions': [

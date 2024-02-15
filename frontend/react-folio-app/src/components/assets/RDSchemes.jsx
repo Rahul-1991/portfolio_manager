@@ -38,7 +38,7 @@ function RDSchemes(props) {
                 <p className="components-text">{scheme.installment.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</p>
               </div>
               <div style={{ flex: 1 }}>
-                <p className="components-text">24th July 2024</p>
+                <p className="components-text">{scheme.maturityDate}</p>
               </div>
               <div style={{ flex: 1 }}>
                 <p className="components-text">{scheme.maturityAmount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</p>

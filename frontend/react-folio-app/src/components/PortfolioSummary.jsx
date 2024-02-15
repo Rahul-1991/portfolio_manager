@@ -6,7 +6,7 @@ function PortfolioSummary(props) {
         </div>
         <div className="net-worth">
           <p>Net Worth</p>
-          <p className="portfolio-value">&#x20B9; {props.total}</p>
+          <p className="portfolio-value">{props.total.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</p>
         </div>
       </div>
     );
